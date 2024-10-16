@@ -4,4 +4,5 @@ export interface CreateCustomerTypes {
 	rate: string | number
 	trackInWeek: string | number
 	accountId?: string
+	isOnUpwork?: boolean
 }

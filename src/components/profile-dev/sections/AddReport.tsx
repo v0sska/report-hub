@@ -38,6 +38,8 @@ import {
 import { useEffect, useState } from 'react'
 import customerService from '@/api/customerService'
 import type { ResCustomerTypes } from '@/components/types/interfaces/customer/res-customer-types'
+import developerService from '@/api/developerService'
+import assignService from '@/api/assignService'
 
 const formSchema = z.object({
 	startWork: z.string().min(2, {
@@ -65,9 +67,18 @@ const AddReport: React.FC = () => {
 	const [customers, setCustomers] = useState<ResCustomerTypes[]>([])
 	useEffect(() => {
 		async function fetchData() {
-			const data = await customerService.getAll()
+			const data = await assignService.findAssignByDeveloper();
+			let customers = [];
 
-			setCustomers(data.data)
+			for(let i = 0; i < data.data.length; i++) {
+				let customer = await customerService.getById(data.data[i].customerId);
+
+				if(customer) {
+					customers.push(customer)
+				}
+			}
+
+			setCustomers(customers)
 		}
 		fetchData()
 	}, [])

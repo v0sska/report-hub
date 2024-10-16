@@ -1,6 +1,7 @@
 import type { ReportType } from '@/components/types/interfaces/report/report-types'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import developerService from '@/api/developerService'
 
 const truncateText = (text: string, wordLimit: number) => {
 	const words = text.split(' ')
@@ -22,8 +23,22 @@ const CardReportForCustomer: React.FC<ReportType> = ({
 	track,
 	report,
 	date,
+	developerId,
 }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [developer, setDeveloper] = useState('');
+
+	useEffect(() => {
+		const fetchData = async() => {
+			if(developerId) {
+				const dev = await developerService.findById(developerId);
+
+				setDeveloper(dev.data.name);
+			}
+		}
+
+		fetchData();
+	}, []);
 
 	const { isTruncated, text: truncatedReport } = truncateText(report, 10);
 
@@ -39,6 +54,7 @@ const CardReportForCustomer: React.FC<ReportType> = ({
 						Work time: {startWork} - {endWork}
 					</p>
 					<p>Date: {date}</p>
+					<p>Developer: {developer}</p>
 				</div>
 			</div>
 			<div className='px-2 border-t-2 border-brown mx-2 py-2'>

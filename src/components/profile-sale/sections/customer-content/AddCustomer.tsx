@@ -34,16 +34,18 @@ const formSchema = z.object({
 		message: 'Name project is required',
 	}),
 	rate: z.string().min(2, {
-		message: 'End time is required',
+		message: 'Rate is required',
 	}),
 	trackInWeek: z.string().min(2, {
-		message: 'End time is required',
+		message: 'Track in week is required',
 	}),
+	isOnUpwork: z.boolean(),
 })
 
 interface AddCustomerTypes {
 	accountId: string
 }
+
 const AddCustomer: React.FC<AddCustomerTypes> = ({ accountId }) => {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -57,13 +59,13 @@ const AddCustomer: React.FC<AddCustomerTypes> = ({ accountId }) => {
 
 	return (
 		<Drawer>
-			<DrawerTrigger className='py-1 px-2 rounded-lg  flex gap-2 bg-brown w-fit '>
+			<DrawerTrigger className='py-1 px-2 rounded-lg flex gap-2 bg-brown w-fit '>
 				Add customer
 			</DrawerTrigger>
-			<DrawerContent className=' bg-main h-fit'>
+			<DrawerContent className='bg-main h-fit'>
 				<DrawerHeader>
 					<DrawerTitle className='text-[#4f4c45]'>
-						Fill in the fields below for the customer 👇 .
+						Fill in the fields below for the customer 👇
 					</DrawerTitle>
 				</DrawerHeader>
 				<Form {...form}>
@@ -95,7 +97,7 @@ const AddCustomer: React.FC<AddCustomerTypes> = ({ accountId }) => {
 										<FormControl>
 											<Input
 												className='text-center'
-												placeholder='Name Example'
+												placeholder='Project Example'
 												{...field}
 											/>
 										</FormControl>
@@ -121,6 +123,7 @@ const AddCustomer: React.FC<AddCustomerTypes> = ({ accountId }) => {
 										</FormItem>
 									)}
 								/>
+
 								<FormField
 									control={form.control}
 									name='trackInWeek'
@@ -139,7 +142,26 @@ const AddCustomer: React.FC<AddCustomerTypes> = ({ accountId }) => {
 									)}
 								/>
 							</div>
+							<FormField
+								control={form.control}
+								name="isOnUpwork"
+								render={({ field }) => (
+									<FormItem className="flex items-center gap-2">
+										<FormControl>
+											<input
+												type="checkbox"
+												checked={field.value}
+												onChange={(e) => field.onChange(e.target.checked)}
+												className="h-4 w-4 mt-1"
+											/>
+										</FormControl>
+										<FormLabel className="mb-0">Is the customer on Upwork?</FormLabel>
+										<FormMessage className="text-red-900" />
+									</FormItem>
+								)}
+							/>
 						</div>
+
 						<DrawerFooter>
 							<DrawerClose className='flex flex-col gap-2'>
 								<Button type='submit' className='bg-brown w-full'>

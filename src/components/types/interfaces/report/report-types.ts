@@ -7,4 +7,5 @@ export interface ReportType {
 	report: string
 	date?: string
 	customerId?: string
+	developerId?: string
 }
