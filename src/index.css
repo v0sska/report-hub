@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background: #e3e3d9;
+}
+
+body {
+	font-family: 'Varela Round', 'Varela Round', sans-serif;
+}
+
+input[type='date'],
+input[type='text'],
+input[type='number'],
+textarea {
+	appearance: none;
+	-webkit-appearance: none;
+	outline: none;
+}
+
+input:focus,
+textarea:focus {
+	outline: none;
+	scale: none;
+}
