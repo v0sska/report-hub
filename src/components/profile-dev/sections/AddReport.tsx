@@ -38,7 +38,6 @@ import {
 import { useEffect, useState } from 'react'
 import customerService from '@/api/customerService'
 import type { ResCustomerTypes } from '@/components/types/interfaces/customer/res-customer-types'
-import developerService from '@/api/developerService'
 import assignService from '@/api/assignService'
 
 const formSchema = z.object({
@@ -165,17 +164,17 @@ const AddReport: React.FC = () => {
 													<SelectValue placeholder='Select customer' />
 												</SelectTrigger>
 											</FormControl>
-											<SelectContent className='max-h-[300px] overflow-y-auto bg-border rounded-md p-2 gap-2 '>
-												{customers.map(customer => (
-													<SelectItem
-														className='w-[85vw] text-center'
-														value={customer.id}
-														key={customer.id}
-													>
+											<SelectContent className='max-h-[300px] overflow-y-auto bg-border rounded-md p-2 gap-2'>
+											{customers.length === 0 ? (
+												<p className='w-[85vw] text-center'>No customers found</p>
+											) : (
+												customers.map(customer => (
+													<SelectItem className='w-[85vw] text-center' value={customer.id} key={customer.id}>
 														{customer.name}
 													</SelectItem>
-												))}
-											</SelectContent>
+												))
+											)}
+										</SelectContent>
 										</Select>
 										<FormMessage className='flex justify-center text-red-900' />
 									</FormItem>

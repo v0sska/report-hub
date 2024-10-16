@@ -9,7 +9,7 @@ interface MainCustomerInfoProps {
 }
 const MainCustomerInfo: React.FC<MainCustomerInfoProps> = ({ customer }) => {
 
-	const [developer, setDeveloper] = useState();
+	const [developer, setDeveloper] = useState('');
 
 	const fetchAssignedDeveloper = async() => {
 		const data = await assignService.findAssignByCustomer(customer.id);
@@ -17,6 +17,9 @@ const MainCustomerInfo: React.FC<MainCustomerInfoProps> = ({ customer }) => {
 		if(data.data.length === 1 && data.data.length !== 0) {
 			return data.data[0].developerId;
 		} 
+		else {
+			setDeveloper('Not assigned');
+		}
 		return data.data;
 	}
 
@@ -25,7 +28,8 @@ const MainCustomerInfo: React.FC<MainCustomerInfoProps> = ({ customer }) => {
 	useEffect(() => {
 	const fetchData = async () => {
 		const response = await fetchAssignedDeveloper();
-		const dev = await developerService.findById(response);	
+		const dev = await developerService.findById(response);
+		
 		setDeveloper(dev.data.name);
 	};
 
