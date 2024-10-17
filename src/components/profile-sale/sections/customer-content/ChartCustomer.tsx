@@ -21,7 +21,7 @@ const ChartCustomer: React.FC<ChartCustomerProps> = ({ reports }) => {
 
     const fetchDevelopers = async () => {
         const developers = await Promise.all(
-            reports.data.map(async (report: Datum) => {
+            reports.map(async (report: Datum) => {
                 if (!developerNames[report.developerId]) { 
                     const data = await developerService.findById(report.developerId);
                     return { developerId: report.developerId, name: data ? data.data.name : 'Unknown' };
@@ -38,21 +38,21 @@ const ChartCustomer: React.FC<ChartCustomerProps> = ({ reports }) => {
     };
 
     useEffect(() => {
-        if (reports && reports.data.length > 0) {
+        if (reports && reports.length > 0) {
             fetchDevelopers();
         }
     }, [reports]);
 
-    if (!reports || reports.data.length === 0) return null;
+    if (!reports || reports.length === 0) return null;
 
-    const labels = reports.data.map((report: Datum) => report.date);
+    const labels = reports.map((report: Datum) => report.date);
 
     const chartData = {
         labels,
         datasets: [
             {
                 label: 'Track time',
-                data: reports.data.map((report: Datum) => ({
+                data: reports.map((report: Datum) => ({
                     x: report.date,
                     y: report.track,
                     developer: developerNames[report.developerId] || report.developerId, 
@@ -88,7 +88,7 @@ const ChartCustomer: React.FC<ChartCustomerProps> = ({ reports }) => {
 
     return (
         <div>
-            {reports.data.length === 0 ? (
+            {reports.length === 0 ? (
                 <div className='w-full text-center pt-4'>
                     No reports found
                 </div>

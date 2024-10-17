@@ -18,6 +18,7 @@ const CustomerPage: React.FC = () => {
 
 	const [customer, setCustomer] = useState<ResCustomerTypes | null>(null)
 	const [reports, setReports] = useState<ReportType[] | null>(null)
+	const [rate, setRate] = useState(0);
 	const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
 		getStartOfWeek(new Date())
 	)
@@ -27,6 +28,21 @@ const CustomerPage: React.FC = () => {
 		const diff = date.getDate() - day + (day === 0 ? -6 : 1)
 		return new Date(date.setDate(diff))
 	}
+
+	const calcRate = async () => {
+	if (reports && reports.length > 0 && customer) {
+		let totalRate = reports.reduce((acc, report) => {
+			return acc + (+report.track * +customer.rate);
+		}, 0);
+
+		if (customer.isOnUpwork) {
+			totalRate -= totalRate * 0.1;
+		}
+			setRate(totalRate);
+		} else {
+			setRate(0);
+		}
+	};
 
 	useEffect(() => {
 		async function fetchData() {
@@ -39,6 +55,7 @@ const CustomerPage: React.FC = () => {
 				const endDate = getEndOfWeek(currentWeekStart)
 					.toISOString()
 					.split('T')[0]
+
 				const reportData = await reportService.getByIdCustomer(
 					id,
 					startDate,
@@ -50,8 +67,14 @@ const CustomerPage: React.FC = () => {
 			}
 		}
 
-		fetchData()
+		fetchData();
+
 	}, [id, currentWeekStart])
+
+	useEffect(() => {
+		calcRate();
+	}, [reports, customer]);
+
 	function getEndOfWeek(startOfWeek: Date): Date {
 		const endOfWeek = new Date(startOfWeek)
 		endOfWeek.setDate(startOfWeek.getDate() + 6)
@@ -88,6 +111,7 @@ const CustomerPage: React.FC = () => {
 				Week {currentWeekStart.toLocaleDateString()} -{' '}
 				{getEndOfWeek(currentWeekStart).toLocaleDateString()}
 			</p>
+			<p>Rate for this week: {rate}</p>
 
 			{reports ? <ChartCustomer reports={reports} /> : <p>Loading ...</p>}
 			<div className='w-full flex justify-between mt-10'>
@@ -101,3 +125,4 @@ const CustomerPage: React.FC = () => {
 }
 
 export default CustomerPage
+
