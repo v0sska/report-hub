@@ -32,6 +32,16 @@ class DeveloperService {
 		}
 	}
 
+	async findAll() {
+		try {
+			const response = await apiClient.get(`${BASE_URL}`)
+			return response.data
+		} catch (error) {
+			console.error('Error fetching all developers:', error)
+			return null
+		}
+	}
+
 }
 
 const developerService = new DeveloperService()

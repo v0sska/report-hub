@@ -27,8 +27,6 @@ class AssignService {
 			return null
 		}
 	}
-	
-
 }
 
 const assignService = new AssignService();

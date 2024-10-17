@@ -19,6 +19,19 @@ class SalesService {
 		}
 	}
 
+	async assignDeveloper(customerId: string, developerId: string) {
+		try {
+			const response = await apiClient.post(`${BASE_URL}/assign-developer`, {
+				developerId,
+				customerId,
+			})
+			return response.data
+		} catch (error) {
+			console.error('Error assigning developer:', error)
+			throw new Error('Unable to assign developer')
+		}
+	}
+
 }
 
 const salesService = new SalesService()
