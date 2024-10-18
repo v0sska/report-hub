@@ -27,6 +27,18 @@ class AssignService {
 			return null
 		}
 	}
+
+	async updateAssing(developerId: string, customerId: string, newDeveloperId: string) {
+		try {
+			const response = await apiClient.patch(`${BASE_URL}?customer-id=${customerId}&developer-id=${developerId}`, {
+				developerId: newDeveloperId,
+			})
+			return response.data
+		} catch (error) {
+			console.error('Error updating assign:', error)
+			throw new Error('Unable to update assign')
+		}
+	}
 }
 
 const assignService = new AssignService();

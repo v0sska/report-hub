@@ -111,7 +111,7 @@ const CustomerPage: React.FC = () => {
 				Week {currentWeekStart.toLocaleDateString()} -{' '}
 				{getEndOfWeek(currentWeekStart).toLocaleDateString()}
 			</p>
-			<p>Rate for this week: {rate}</p>
+			<p>Sallary for this week: {rate}$</p>
 
 			{reports ? <ChartCustomer reports={reports} /> : <p>Loading ...</p>}
 			<div className='w-full flex justify-between mt-10'>

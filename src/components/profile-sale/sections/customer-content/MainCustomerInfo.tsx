@@ -118,7 +118,7 @@ const MainCustomerInfo: React.FC<MainCustomerInfoProps> = ({ customer }) => {
 												<Select
 													onValueChange={val => {
 														field.onChange(val);
-														handleDeveloperSelection(val); // Викликаємо функцію для вибору
+														handleDeveloperSelection(val);
 													}}
 													value={field.value}
 												>
