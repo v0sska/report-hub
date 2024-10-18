@@ -129,61 +129,59 @@ const MainCustomerInfo: React.FC<MainCustomerInfoProps> = ({ customer }) => {
         <p className="flex items-center gap-2">
           <ContactRound />
           <span className="font-extrabold">Developer:</span>
-          <span className="font-extrabold flex flex-row justify-between">
+          <span className="font-extrabold flex items-center">
             {assigned ? (
-              developer?.name
+              <span>{developer?.name}</span>
             ) : (
               <Form {...form}>
-                <form>
-                  <FormField
-                    control={form.control}
-                    name="developerId"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center">
-                        <Select
-                          onValueChange={(val) => {
-                            if (isEdit) {
-                              editClient({
-                                developerId: developer?.id,
-                                customerId: customer.id,
-                                newDeveloperId: val,
-                              });
-                              handleDeveloperSelection(val);
-                            } else {
-                              field.onChange(val);
-                              handleDeveloperSelection(val);
-                            }
-                          }}
-                          value={field.value}
-                        >
-                          <FormControl className="w-auto">
-                            <SelectTrigger className="bg-brown rounded-md p-1 min-w-[100px]">
-                              <SelectValue placeholder="Developer" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="max-h-[300px] overflow-y-auto bg-border rounded-md p-2 gap-2">
-                            {developers.length === 0 ? (
-                              <p className="w-[85vw] text-center">
-                                No developers found
-                              </p>
-                            ) : (
-                              developers.map((developer) => (
-                                <SelectItem
-                                  className="w-[85vw] text-center"
-                                  value={developer.id}
-                                  key={developer.id}
-                                >
-                                  {developer.name}
-                                </SelectItem>
-                              ))
-                            )}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="flex justify-center text-red-900" />
-                      </FormItem>
-                    )}
-                  />
-                </form>
+                <FormField
+                  control={form.control}
+                  name="developerId"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center">
+                      <Select
+                        onValueChange={(val) => {
+                          if (isEdit) {
+                            editClient({
+                              developerId: developer?.id,
+                              customerId: customer.id,
+                              newDeveloperId: val,
+                            });
+                            handleDeveloperSelection(val);
+                          } else {
+                            field.onChange(val);
+                            handleDeveloperSelection(val);
+                          }
+                        }}
+                        value={field.value}
+                      >
+                        <FormControl className="w-auto">
+                          <SelectTrigger className="bg-brown rounded-md p-1 min-w-[100px]">
+                            <SelectValue placeholder="Developer" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-[300px] overflow-y-auto bg-border rounded-md p-2 gap-2">
+                          {developers.length === 0 ? (
+                            <p className="w-[85vw] text-center">
+                              No developers found
+                            </p>
+                          ) : (
+                            developers.map((developer) => (
+                              <SelectItem
+                                className="w-[85vw] text-center"
+                                value={developer.id}
+                                key={developer.id}
+                              >
+                                {developer.name}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="flex justify-center text-red-900" />
+                    </FormItem>
+                  )}
+                />
               </Form>
             )}
             {assigned && (
