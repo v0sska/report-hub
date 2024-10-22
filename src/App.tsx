@@ -3,14 +3,15 @@ import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
-} from 'react-router-dom'
+} from "react-router-dom";
 
-import AuthPage from './pages/AuthPage'
-import SalesPage from './pages/SalesPage'
-import CustomerPage from './pages/CustomerPage'
-import PrivateRoutes from './guard/PrivateRoutes'
-import DeveloperPage from './pages/DeveloperPage'
-import CreateAccountPage from './pages/CreateAccountPage'
+import AuthPage from "./pages/AuthPage";
+import SalesPage from "./pages/SalesPage";
+import CustomerPage from "./pages/CustomerPage";
+import PrivateRoutes from "./guard/PrivateRoutes";
+import DeveloperPage from "./pages/DeveloperPage";
+import CreateAccountPage from "./pages/CreateAccountPage";
+import ClientsOverview from "./pages/ClientsOverview";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,15 +21,16 @@ const router = createBrowserRouter(
         <Route path="/profile-dev" element={<DeveloperPage />} />
         <Route path="/customer/:id" element={<CustomerPage />} />
         <Route path="/create-account" element={<CreateAccountPage />} />
+        <Route path="/clients-overview" element={<ClientsOverview />} />
       </Route>
 
       <Route index element={<AuthPage />} />
     </>
   )
-)
+);
 
 function App() {
-  return <RouterProvider router={router} />
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;

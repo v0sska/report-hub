@@ -3,6 +3,7 @@ import developerService from "@/api/developerService";
 import salesService from "@/api/salesService";
 import type { ResCustomerTypes } from "@/components/types/interfaces/customer/res-customer-types";
 import { EditReportTypes } from "@/components/types/interfaces/dev/edit-types";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -185,8 +186,8 @@ const MainCustomerInfo: React.FC<MainCustomerInfoProps> = ({ customer }) => {
               </Form>
             )}
             {assigned && (
-              <button
-                className="bg-brown ml-[6px] text-white py-1 px-[10px] rounded-lg hover:bg-darkBrown w-[75px] flex flex-row justify-between items-center"
+              <Button
+                className="bg-brown ml-[6px] text-black py-1 px-[10px] rounded-lg hover:bg-darkBrown w-[75px] flex flex-row justify-between items-center"
                 onClick={() => {
                   setIsEdit(true);
                   setAssigned(false);
@@ -194,7 +195,7 @@ const MainCustomerInfo: React.FC<MainCustomerInfoProps> = ({ customer }) => {
               >
                 <Pencil1Icon />
                 Edit
-              </button>
+              </Button>
             )}
           </span>
         </p>
