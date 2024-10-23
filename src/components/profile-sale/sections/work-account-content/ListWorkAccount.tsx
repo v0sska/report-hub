@@ -70,7 +70,9 @@ const ListWorkAccount: React.FC = () => {
               <div className="flex w-full justify-end mt-2">
                 <Button
                   className="bg-brown ml-[6px] text-black hite py-1 px-[10px] rounded-lg hover:bg-darkBrown mr-[15px] gap-[10px] flex flex-row justify-between items-center"
-                  onClick={() => navigate(`/clients-overview`)}
+                  onClick={() =>
+                    navigate(`/clients-overview/${workAccount.id}`)
+                  }
                 >
                   <PersonIcon />
                   Clients Overview

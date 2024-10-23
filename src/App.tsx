@@ -21,7 +21,7 @@ const router = createBrowserRouter(
         <Route path="/profile-dev" element={<DeveloperPage />} />
         <Route path="/customer/:id" element={<CustomerPage />} />
         <Route path="/create-account" element={<CreateAccountPage />} />
-        <Route path="/clients-overview" element={<ClientsOverview />} />
+        <Route path="/clients-overview/:id" element={<ClientsOverview />} />
       </Route>
 
       <Route index element={<AuthPage />} />
