@@ -32,6 +32,19 @@ class SalesService {
 		}
 	}
 
+	async updateIncome(incomeId: string, isPay: boolean) {
+		try {
+			const response = await apiClient.patch(`${BASE_URL}/income/${incomeId}`, {
+				'isPay': isPay,
+			});
+
+			return response.data;
+		} catch (error) {
+			console.error('Error updating income:', error);
+			throw new Error('Unable to update income');
+		}
+	}
+
 }
 
 const salesService = new SalesService()
