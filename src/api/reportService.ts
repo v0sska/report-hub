@@ -21,11 +21,7 @@ class ReportService {
     }
   }
 
-  async getByIdCustomer(
-    id: string,
-    startDate: string,
-    endDate: string
-  ): Promise<ReportType[]> {
+  async getByIdCustomer(id: string, startDate: string, endDate: string) {
     try {
       const response = await apiClient.get(`${BASE_URL}/dates`, {
         params: {

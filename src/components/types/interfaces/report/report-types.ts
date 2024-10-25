@@ -8,4 +8,11 @@ export interface ReportType {
   date: string;
   customerId: string;
   developerId: string;
+  income: {
+    id: string;
+    payed: string;
+    date: string;
+    reportId: string;
+    isPay: boolean;
+  };
 }

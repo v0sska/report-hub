@@ -1,6 +1,9 @@
 "use client";
 
+import reportService from "@/api/reportService";
 import workAccountService from "@/api/workAccountService";
+import { ReportType } from "@/components/types/interfaces/report/report-types";
+import { ReportTypeForTable } from "@/components/types/interfaces/report/report-types-for-table";
 import { ResWorkAccWithCustomerTypes } from "@/components/types/interfaces/work_account/res-work-acc-with-customer-types";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +24,12 @@ const ClientsOverview = () => {
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().substr(0, 7)
   );
-  const [checkBox, setCheckBox] = useState(false);
+  const [checkBoxStates, setCheckBoxStates] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [customers, setCustomers] = useState<ReportType[]>([]);
+  const [reportsData, setReportsData] = useState<ReportTypeForTable[]>([]);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -47,6 +54,14 @@ const ClientsOverview = () => {
 
   const handleMonthChange = (value: string) => {
     setSelectedMonth(value);
+    setCheckBoxStates({});
+  };
+
+  const handleCheckBoxChange = (dayKey: string) => {
+    setCheckBoxStates((prev) => ({
+      ...prev,
+      [dayKey]: !prev[dayKey],
+    }));
   };
 
   const renderTableHeader = () => {
@@ -70,30 +85,82 @@ const ClientsOverview = () => {
     );
   };
 
-  const handleCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckBox(e.target.value);
+  const customerDataToRender = () => {
+    const newReportsData = customers.flatMap((customer) => {
+      return customer.map((el: ReportTypeForTable) => {
+        return {
+          customerId: el.customerId,
+          payed: el.income.payed,
+          track: el.track,
+          date: el.date,
+        };
+      });
+    });
+
+    setReportsData(newReportsData);
   };
 
-  useEffect(() => {
-    const fetchWorkAccounts = async () => {
-      try {
-        const data = await workAccountService.getBySaleId();
-        console.log(data);
+  console.log(reportsData);
 
-        const filteredBySale = data.filter((sale) => sale.id === params.id);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataWorkAccounts = await workAccountService.getBySaleId();
+        const filteredBySale = dataWorkAccounts.filter(
+          (sale) => sale.id === params.id
+        );
         if (filteredBySale.length > 0) {
           setWorkAccounts(filteredBySale);
         }
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    fetchWorkAccounts();
+    fetchData();
   }, [params.id]);
+
+  useEffect(() => {
+    const fetchCustomer = async () => {
+      if (workAccounts.length > 0) {
+        try {
+          const firstDate = new Date(selectedMonth);
+          firstDate.setDate(1);
+          const formattedFirstDate = firstDate.toISOString().split("T")[0];
+
+          const lastDate = new Date(selectedMonth);
+          lastDate.setDate(daysInMonth(selectedMonth));
+          const formattedLastDate = lastDate.toISOString().split("T")[0];
+
+          const customerPromises = workAccounts[0].customer.map(
+            async (customer) => {
+              const data = await reportService.getByIdCustomer(
+                customer.id,
+                formattedFirstDate,
+                formattedLastDate
+              );
+              return data;
+            }
+          );
+
+          const customersData = await Promise.all(customerPromises);
+          setCustomers(customersData);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchCustomer();
+  }, [workAccounts, selectedMonth]);
+
+  useEffect(() => {
+    if (customers.length > 0) {
+      customerDataToRender();
+    }
+  }, [customers]);
 
   return (
     <div className="p-4">
@@ -103,7 +170,7 @@ const ClientsOverview = () => {
       ) : (
         <>
           <div className="mt-[30px] flex flex-row justify-between items-center">
-            <p className="text-[25px]">Sale: {workAccounts[0].name}</p>
+            <p className="text-[25px]">Sale: {workAccounts[0]?.name}</p>
             <Button onClick={() => navigate(-1)}>back</Button>
           </div>
           <div className="my-4">
@@ -136,6 +203,10 @@ const ClientsOverview = () => {
               <tbody>
                 {workAccounts.map((account) =>
                   account.customer.map((el) => {
+                    const dailyReports = reportsData.filter(
+                      (report) => report.customerId === el.id
+                    );
+
                     return (
                       <tr key={el.id}>
                         <td className="border p-2 flex justify-center items-center min-h-[100px]">
@@ -149,17 +220,58 @@ const ClientsOverview = () => {
                               new Date(selectedMonth).getMonth(),
                               index + 1
                             );
+                            const dayKey = `${el.id}-${index + 1}`;
+
+                            const reportForDay = dailyReports.find((report) => {
+                              console.log(
+                                report.date,
+                                dayDate,
+                                "1DA1TE1",
+                                new Date(report.date)
+                                  .toISOString()
+                                  .split("T")[0] ===
+                                  dayDate.toISOString().split("T")[0]
+                              );
+                              return (
+                                new Date(report.date)
+                                  .toISOString()
+                                  .split("T")[0] ===
+                                dayDate.toISOString().split("T")[0]
+                              );
+                            });
+
+                            console.log(reportForDay, "MAYBE HERE");
                             return (
                               <>
                                 <td key={`day-${index}`} className="border p-2">
-                                  {/* Add any logic here for daily data */}
+                                  {reportForDay ? (
+                                    <>
+                                      <p>Paid: {reportForDay.payed}</p>
+                                      <span>Tracked: {reportForDay.track}</span>
+                                    </>
+                                  ) : (
+                                    "No Report"
+                                  )}
                                 </td>
+
                                 {dayDate.getDay() === 0 && (
                                   <td
-                                    key={`row-${index}`}
+                                    key={`checkbox-${dayKey}`}
                                     className="border flex justify-center items-center min-h-[100px]"
                                   >
-                                    <input type="checkbox" />
+                                    <label className="flex items-center">
+                                      Paid:
+                                      <input
+                                        type="checkbox"
+                                        checked={
+                                          checkBoxStates[dayKey] || false
+                                        }
+                                        onChange={() =>
+                                          handleCheckBoxChange(dayKey)
+                                        }
+                                        className="ml-2"
+                                      />
+                                    </label>
                                   </td>
                                 )}
                               </>
